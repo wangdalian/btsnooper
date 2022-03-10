@@ -44,8 +44,10 @@ type HciLeExtendedCreateConnection struct {
 }
 
 type HciCmdPktParseResult struct {
-	Code int
-	Ret  interface{}
+	Code      int
+	OpCodeOgf uint8
+	OpCodeOcf uint16
+	Ret       interface{}
 }
 type HciCmdPktParser func(OpCodeOgf uint8, OpCodeOcf uint16, hciCmdPktPayloadBuf []byte) HciCmdPktParseResult
 
@@ -61,7 +63,10 @@ func HciCmdPktParse(OpCodeOgf uint8, OpCodeOcf uint16, hciCmdPktPayloadBuf []byt
 	if !ok {
 		parser = HciCmdPktDefaultParser
 	}
-	return parser(OpCodeOgf, OpCodeOcf, hciCmdPktPayloadBuf)
+	parsed := parser(OpCodeOgf, OpCodeOcf, hciCmdPktPayloadBuf)
+	parsed.OpCodeOcf = OpCodeOcf
+	parsed.OpCodeOgf = OpCodeOgf
+	return parsed
 }
 
 func HciCmdPktDefaultParser(OpCodeOgf uint8, OpCodeOcf uint16, hciCmdPktPayloadBuf []byte) HciCmdPktParseResult {

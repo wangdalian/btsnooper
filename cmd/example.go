@@ -1,13 +1,13 @@
-// 解析BTSnoop文件格式
-// 文件格式参考：https://fte.com/webhelpii/hsu/Content/Technical_Information/BT_Snoop_File_Format.htm
+// 解析BT Snoop v1文件格式，并测试部分HCI包
 package main
 
 import (
-	"cmd/btsnooper.go/pkg/hci"
 	"fmt"
 	"io/ioutil"
 	"os"
+
 	"wangdalian/btsnooper/pkg/btsnoop"
+	"wangdalian/btsnooper/pkg/hci"
 )
 
 // BTSnoop文件格式定义

@@ -19,8 +19,10 @@ const (
 )
 
 type HciEvtPktParseResult struct {
-	Code int
-	Ret  interface{}
+	Code         int
+	EventCode    uint8
+	SubEventCode uint8
+	Ret          interface{}
 }
 type HciEvtPktParser func(EventCode uint8, SubEventCode int, hciEvtPktPayloadBuf []byte) HciEvtPktParseResult
 
@@ -41,7 +43,10 @@ func HciEvtPktParse(EventCode uint8, hciEvtPktPayloadBuf []byte) HciEvtPktParseR
 	if !ok {
 		parser = HciEvtPktDefaultParser
 	}
-	return parser(EventCode, subEventCode, hciEvtPktPayloadBuf)
+	parsed := parser(EventCode, subEventCode, hciEvtPktPayloadBuf)
+	parsed.EventCode = EventCode
+	parsed.SubEventCode = uint8(subEventCode)
+	return parsed
 }
 
 func HciEvtPktDefaultParser(EventCode uint8, SubEventCode int, hciEvtPktPayloadBuf []byte) HciEvtPktParseResult {

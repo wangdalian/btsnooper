@@ -11,8 +11,9 @@ const (
 )
 
 type HciAclPktParseResult struct {
-	Code int
-	Ret  interface{}
+	Code   int
+	OpCode uint8
+	Ret    interface{}
 }
 
 type AttPktParser func(OpCode uint8, attPayloadBuf []byte) HciAclPktParseResult
@@ -63,7 +64,9 @@ func ConnectionOrientedChannelsInBasicFrame(hciAclPktPayloadBuf []byte) HciAclPk
 	if !ok {
 		parser = AttPktDefaultParser
 	}
-	return parser(OpCode, attPayloadBuf)
+	parsed := parser(OpCode, attPayloadBuf)
+	parsed.OpCode = OpCode
+	return parsed
 }
 
 // BLUETOOTH SPECIFICATION Version 4.2 [Vol 3, Part A] 3 DATA PACKET FORMAT

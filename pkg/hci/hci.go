@@ -54,8 +54,9 @@ const (
 )
 
 type HciPktParseResult struct {
-	Code int
-	Ret  interface{}
+	Code       int
+	HciPktType uint8
+	Ret        interface{}
 }
 type HciPktParser func(hciPktType byte, hciPayloadBuf []byte) HciPktParseResult
 
@@ -70,7 +71,9 @@ func HciPktParse(hciPktType byte, hciPayloadBuf []byte) HciPktParseResult {
 	if !ok {
 		parser = HciDefaultParser
 	}
-	return parser(hciPktType, hciPayloadBuf)
+	parsed := parser(hciPktType, hciPayloadBuf)
+	parsed.HciPktType = hciPktType
+	return parsed
 }
 
 func HciDefaultParser(hciPktType byte, hciPayloadBuf []byte) HciPktParseResult {
